@@ -10,3 +10,6 @@
 
 /* Dados Específicos do Pokémon (Card, Tipos, Stats, Habilidades) */
 @import url('./pokemon-data.css');
+
+/* Skeleton Loader (Animação de Carregamento) */
+@import url('./skeleton.css');

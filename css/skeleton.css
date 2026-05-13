@@ -1,0 +1,41 @@
+
+#esqueletoResultado {
+    background-color: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 28px;
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Classe base que aplica a animação de pulso/brilho */
+.esqueleto-animacao {
+    background: linear-gradient(90deg, #e6e6e6 25%, #f5f5f5 50%, #e6e6e6 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+    border-radius: 4px;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Formatos das peças do esqueleto para imitar o card real */
+.esqueleto-header { height: 14px; width: 120px; border-radius: 8px; margin-bottom: 10px; }
+
+.esqueleto-card { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+.esqueleto-img { width: 150px; height: 150px; border-radius: 50%; } /* Círculo imitando a imagem */
+
+.esqueleto-info { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 10px; }
+.esqueleto-linha { height: 24px; border-radius: 4px; }
+.esqueleto-linha.titulo { width: 60%; height: 36px; margin-bottom: 4px; }
+.esqueleto-linha.subtitulo { width: 30%; height: 14px; margin-bottom: 10px; }
+
+.esqueleto-tags { display: flex; gap: 6px; margin-bottom: 10px; }
+.esqueleto-tag { width: 70px; height: 26px; border-radius: 20px; }
+.esqueleto-bloco { width: 100%; height: 12px; margin-bottom: 4px; }
+
+.esqueleto-painel { height: 140px; width: 100%; border-radius: 8px; margin-top: 10px; }

@@ -21,7 +21,7 @@
 
     </header>
 
-    <main>
+<main>
 
         <section id="secaoBusca">
 
@@ -43,7 +43,28 @@
 
         </section>
 
-        <!-- Card onde os dados do Pokémon serão exibidos -->
+        <section id="esqueletoResultado" class="escondido">
+            <div class="esqueleto-animacao esqueleto-header"></div>
+            
+            <div class="esqueleto-card">
+                <div class="esqueleto-animacao esqueleto-img"></div>
+                <div class="esqueleto-info">
+                    <div class="esqueleto-animacao esqueleto-linha titulo"></div>
+                    <div class="esqueleto-animacao esqueleto-linha subtitulo"></div>
+                    <div class="esqueleto-tags">
+                        <div class="esqueleto-animacao esqueleto-tag"></div>
+                        <div class="esqueleto-animacao esqueleto-tag"></div>
+                    </div>
+                    <div class="esqueleto-animacao esqueleto-bloco"></div>
+                    <div class="esqueleto-animacao esqueleto-bloco"></div>
+                    <div class="esqueleto-animacao esqueleto-bloco"></div>
+                </div>
+            </div>
+            
+            <div class="esqueleto-animacao esqueleto-painel"></div>
+            <div class="esqueleto-animacao esqueleto-painel"></div>
+        </section>
+
         <section id="secaoResultado" class="escondido">
  
             <h2>Resultado</h2>
@@ -72,7 +93,6 @@
  
             </div>
  
-            <!-- Fraquezas e Vantagens de tipagem -->
             <div id="blocoDefesas">
                 
                 <h4>Fraquezas e Vantagens <span class="subtitulo"></span></h4>
@@ -81,12 +101,10 @@
                 
             </div>
  
-            <!-- Habilidades (passivas) do Pokémon -->
             <div id="blocoHabilidades">
  
                 <h4>Habilidades</h4>
  
-                <!-- As habilidades serão inseridas aqui pelo JS -->
                 <div id="listaHabilidades"></div>
  
             </div>
@@ -110,8 +128,11 @@
 
     </footer>
 
-    <script src="js/script.js"></script>
-
+    <script src="js/variaveis.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/autocomplete.js"></script>
+    <script src="js/main.js"></script>
 </body>
 
 </html>
