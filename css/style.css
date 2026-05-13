@@ -1,0 +1,12 @@
+
+/* Variáveis de Cor, Fontes e Configurações Globais */
+@import url('./variables.css');
+
+/* Reset e Estrutura Base (Header, Main, Footer) */
+@import url('./base.css');
+
+/* Componentes */
+@import url('./components.css');
+
+/* Dados Específicos do Pokémon (Card, Tipos, Stats, Habilidades) */
+@import url('./pokemon-data.css');

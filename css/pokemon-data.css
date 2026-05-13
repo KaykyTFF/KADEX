@@ -1,0 +1,289 @@
+/* ===========================
+   css/pokemon-data.css
+=========================== */
+#cardPokemon {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+}
+
+#imgPokemon {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.1));
+    transition: transform 0.3s ease;
+}
+
+#imgPokemon:hover { transform: translateY(-4px) scale(1.04); }
+
+#infoPokemon {
+    flex: 1;
+    min-width: 200px;
+}
+
+#nomePokemon {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    text-transform: capitalize;
+    color: var(--text);
+    margin-bottom: 2px;
+    letter-spacing: -0.02em;
+}
+
+#numeroPokemon {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 14px;
+    letter-spacing: 0.08em;
+}
+
+#tiposPokemon {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.tipo {
+    padding: 4px 13px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+
+/* ===========================
+   Abas de Formas Alternativas
+=========================== */
+
+#abasFormas {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    border-bottom: 2px solid var(--border); 
+}
+
+.aba-forma {
+    padding: 10px 18px;
+    background-color: var(--bg); /* Fundo ligeiramente cinzento para abas inativas */
+    border: 1px solid var(--border);
+    border-bottom: none; 
+    border-radius: 8px 8px 0 0; /* Arredonda apenas os cantos superiores */
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+    position: relative;
+    top: 2px; 
+}
+
+.aba-forma:hover {
+    background-color: #ebebeb;
+    color: var(--text);
+}
+
+/* Estilo para a aba que está atualmente selecionada */
+.aba-forma.ativa {
+    background-color: var(--bg-card);
+    color: var(--red);
+    font-weight: 700;
+    border-top: 3px solid var(--red);
+    border-bottom: 2px solid var(--bg-card); 
+    z-index: 2;
+}
+
+/* Cores originais mantidas (ótimas no fundo claro) */
+.tipo-fire { background-color: #f08030; } .tipo-water { background-color: #6890f0; } .tipo-grass { background-color: #78c850; } .tipo-electric { background-color: #f8d030; color: #333; } .tipo-psychic { background-color: #f85888; } .tipo-normal { background-color: #a8a878; } .tipo-poison { background-color: #a040a0; } .tipo-ground { background-color: #e0c068; color: #333; } .tipo-rock { background-color: #b8a038; } .tipo-bug { background-color: #a8b820; } .tipo-ghost { background-color: #705898; } .tipo-dragon { background-color: #7038f8; } .tipo-dark { background-color: #705848; } .tipo-steel { background-color: #b8b8d0; color: #333; } .tipo-fairy { background-color: #ee99ac; } .tipo-ice { background-color: #98d8d8; color: #333; } .tipo-fighting { background-color: #c03028; } .tipo-flying { background-color: #a890f0; }
+
+#infoFisica {
+    margin-bottom: 18px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    display: flex;
+    gap: 20px;
+}
+
+#infoFisica strong { font-weight: 500; }
+#infoFisica span { color: var(--text); font-weight: 600; }
+
+#baseStatsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 10px;
+}
+
+.stat-row { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; }
+.stat-name { width: 56px; text-align: right; color: var(--text-muted); font-size: 0.78rem; font-weight: 600; text-transform: uppercase; }
+.stat-value { width: 28px; text-align: right; font-weight: 700; color: var(--text); font-size: 0.85rem; }
+.stat-bar-wrap { flex: 1; background-color: var(--border); border-radius: 99px; height: 6px; overflow: hidden; }
+.stat-bar-fill { height: 100%; border-radius: 99px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* Bloco Defesas e Habilidades */
+#blocoDefesas, #blocoHabilidades {
+    margin-top: 20px;
+    background-color: var(--bg-card-2);
+    border-radius: var(--radius-sm);
+    padding: 18px;
+    border: 1px solid var(--border);
+}
+
+#blocoDefesas h4, #blocoHabilidades h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+}
+
+#gridDefesas { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; text-align: center; }
+@media (max-width: 600px) { #gridDefesas { grid-template-columns: repeat(6, 1fr); } }
+
+.defesa-coluna { display: flex; flex-direction: column; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+.defesa-tipo { padding: 5px 0; font-size: 0.65rem; font-weight: 700; color: white; text-transform: uppercase; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+.defesa-multiplicador { padding: 6px 0; font-size: 0.85rem; font-weight: 700; min-height: 28px; display: flex; align-items: center; justify-content: center; background-color: white; color: var(--text); }
+
+.mult-fraco  { background-color: #4e9a06; color: white; }
+.mult-resist { background-color: #a40000; color: white; }
+.mult-imune  { background-color: #e0e0e0; color: #555; } /* Imunidade no tema claro vira um cinza neutro */
+
+#listaHabilidades { display: flex; flex-direction: column; gap: 10px; }
+
+.habilidade {
+    background-color: var(--bg-card);
+    border-left: 3px solid var(--red);
+    border-radius: 6px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.habilidade:hover { border-color: var(--red); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+.habilidade .nomeHabilidade { font-weight: 700; text-transform: capitalize; color: var(--text); font-size: 0.95rem; }
+.habilidade .oculta { font-size: 0.75rem; color: var(--text-dim); margin-left: 8px; font-style: italic; }
+.habilidade .descHabilidade { font-size: 0.9rem; color: var(--text-muted); margin-top: 6px; line-height: 1.5; }
+
+/* ===========================
+   Cadeia Evolutiva
+=========================== */
+
+#blocoEvolucao {
+    margin-top: 20px;
+    background-color: var(--bg-card-2);
+    border-radius: var(--radius-sm);
+    padding: 18px;
+    border: 1px solid var(--border);
+    overflow-x: auto; /* Permite scroll horizontal se a cadeia for muito longa */
+}
+
+#blocoEvolucao h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.evo-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: max-content;
+}
+
+/* Container de cada nó da evolução (Pokémon + Suas Evoluções) */
+.evo-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.evo-pokemon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.evo-pokemon:hover {
+    transform: translateY(-4px);
+}
+
+.evo-pokemon img {
+    width: 85px;
+    height: 85px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.06));
+}
+
+.evo-id {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    font-weight: 600;
+}
+
+.evo-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    text-transform: capitalize;
+}
+
+.evo-types {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: capitalize;
+}
+
+/* Container para ramificações de evolução (Bifurcações) */
+.evo-branches {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.evo-branch {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.evo-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-dim);
+    min-width: 70px;
+    text-align: center;
+    gap: 2px;
+}
+
+.evo-arrow span {
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.evo-arrow i {
+    font-style: normal;
+    font-size: 1.2rem;
+    line-height: 0.8;
+}

@@ -1,0 +1,97 @@
+/* ===========================
+   css/components.css
+=========================== */
+#campoBusca {
+    display: flex;
+    gap: 10px;
+    position: relative;
+}
+
+#inputPokemon {
+    flex: 1;
+    padding: 14px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#inputPokemon::placeholder { color: var(--text-dim); }
+
+#inputPokemon:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px var(--red-glow);
+}
+
+#btnBuscar {
+    padding: 14px 26px;
+    background-color: var(--red);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+#btnBuscar:hover {
+    background-color: var(--red-dark);
+    box-shadow: 0 4px 15px var(--red-glow);
+}
+
+#btnBuscar:active { transform: scale(0.97); }
+
+#mensagemErro {
+    margin-top: 14px;
+    color: var(--red);
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+#listaSugestoes {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: calc(100% - 110px);
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    max-height: 260px;
+    overflow-y: auto;
+    list-style: none;
+    z-index: 10;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+
+.sugestao-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background-color 0.15s;
+}
+
+.sugestao-item:last-child { border-bottom: none; }
+.sugestao-item:hover { background-color: var(--bg-card-2); }
+
+.sugestao-img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+}
+
+.sugestao-nome {
+    font-size: 0.95rem;
+    text-transform: capitalize;
+    color: var(--text);
+    font-weight: 500;
+}

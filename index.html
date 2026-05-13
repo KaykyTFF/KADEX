@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Buscador de Pokémon</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>KADEX</h1>
+        <p>Busque informações de qualquer Pokémon usando a PokéAPI</p>
+
+    </header>
+
+    <main>
+
+        <section id="secaoBusca">
+
+            <h2>Buscar Pokémon</h2>
+
+            <div id="campoBusca">
+                <input
+                    type="text"
+                    id="inputPokemon"
+                    placeholder="Nome ou ID na Pokédex"
+                    autocomplete="off"
+                >
+                <button id="btnBuscar">Buscar</button>
+                
+                <ul id="listaSugestoes" class="escondido"></ul>
+            </div>
+
+            <p id="mensagemErro" class="escondido">E isso lá é um pokémon? Tente outro nome ou número.</p>
+
+        </section>
+
+        <!-- Card onde os dados do Pokémon serão exibidos -->
+        <section id="secaoResultado" class="escondido">
+ 
+            <h2>Resultado</h2>
+
+            <div id="abasFormas"></div>
+
+            <div id="cardPokemon">
+ 
+                <img id="imgPokemon" src="" alt="Imagem do Pokémon">
+ 
+                <div id="infoPokemon">
+ 
+                    <h3 id="nomePokemon"></h3>
+                    <p id="numeroPokemon"></p>
+ 
+                    <div id="tiposPokemon"></div>
+ 
+                    <div id="infoFisica" style="margin-bottom: 15px; font-size: 0.95rem; color: #555;">
+                        <p><strong>Altura:</strong> <span id="alturaPokemon"></span></p>
+                        <p><strong>Peso:</strong> <span id="pesoPokemon"></span></p>
+                    </div>
+                    
+                    <div id="baseStatsContainer"></div>
+ 
+                </div>
+ 
+            </div>
+ 
+            <!-- Fraquezas e Vantagens de tipagem -->
+            <div id="blocoDefesas">
+                
+                <h4>Fraquezas e Vantagens <span class="subtitulo"></span></h4>
+                
+                <div id="gridDefesas"></div>
+                
+            </div>
+ 
+            <!-- Habilidades (passivas) do Pokémon -->
+            <div id="blocoHabilidades">
+ 
+                <h4>Habilidades</h4>
+ 
+                <!-- As habilidades serão inseridas aqui pelo JS -->
+                <div id="listaHabilidades"></div>
+ 
+            </div>
+
+            <div id="blocoEvolucao">
+                
+                <h4>Cadeia Evolutiva</h4>
+                
+                <div id="gridEvolucao" class="evo-container"></div>
+                
+            </div>
+ 
+        </section>
+
+    </main>
+
+    <footer>
+
+        <p>Projeto desenvolvido na disciplina de Programação Web</p>
+        <p>Kayky Terles</p>
+
+    </footer>
+
+    <script src="js/script.js"></script>
+
+</body>
+
+</html>
