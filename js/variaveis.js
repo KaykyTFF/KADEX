@@ -12,9 +12,15 @@ const numeroPokemon      = document.getElementById("numeroPokemon");
 const tiposPokemon       = document.getElementById("tiposPokemon");
 const alturaPokemon      = document.getElementById("alturaPokemon");
 const pesoPokemon        = document.getElementById("pesoPokemon");
-
+const listaMovimentos = document.getElementById("listaMovimentos");
 const listaHabilidades   = document.getElementById("listaHabilidades");
 const listaSugestoes     = document.getElementById("listaSugestoes");
+
+const btnMoveLevel = document.getElementById("btnMoveLevel");
+const btnMoveTM    = document.getElementById("btnMoveTM");
+const btnMoveEgg   = document.getElementById("btnMoveEgg");
+let movimentosAtuais = [];
+
 
 const TODOS_OS_TIPOS = [
     "normal", "fire", "water", "electric", "grass", "ice",

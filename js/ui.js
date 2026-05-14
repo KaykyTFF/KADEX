@@ -204,3 +204,157 @@ async function construirCadeiaEvolutiva(noAtual, containerDOM) {
         console.error("Erro ao construir nó evolutivo:", erro);
     }
 }
+
+// ==============================
+// Função: Filtra e exibe os movimentos aprendidos por Nível
+// ==============================
+async function buscarMovimentos(movesDaAPI) {
+    
+    listaMovimentos.innerHTML = "";
+
+    // 1. Filtrar apenas os movimentos aprendidos por "level-up"
+    let movimentosLevelUp = [];
+
+    movesDaAPI.forEach(function(itemMovimento) {
+        // Encontra todas as vezes que o movimento é aprendido por aumento de nível nas versões do jogo
+        const detalhesLevelUp = itemMovimento.version_group_details.filter(v => v.move_learn_method.name === "level-up");
+
+        if (detalhesLevelUp.length > 0) {
+            // Pega a versão mais recente em que ele aprende o golpe (o último item do array)
+            const ultimoDetalhe = detalhesLevelUp[detalhesLevelUp.length - 1];
+            
+            movimentosLevelUp.push({
+                nomeUrl: itemMovimento.move.url,
+                nomeExibicao: itemMovimento.move.name.replace(/-/g, ' '),
+                nivel: ultimoDetalhe.level_learned_at
+            });
+        }
+    });
+
+    // 2. Ordenar a lista pelo nível de aprendizado (do menor para o maior)
+    movimentosLevelUp.sort((a, b) => a.nivel - b.nivel);
+
+    // 3. Buscar os detalhes técnicos de cada movimento em paralelo (Power, Accuracy, Class)
+    const promessasAtaques = movimentosLevelUp.map(mov => fetch(mov.nomeUrl).then(res => res.json()));
+    
+    try {
+        const dadosAtaques = await Promise.all(promessasAtaques);
+
+        // 4. Montar o HTML da tabela
+        dadosAtaques.forEach(function(dadosAtaque, index) {
+            const nivel = movimentosLevelUp[index].nivel;
+            const nome = movimentosLevelUp[index].nomeExibicao;
+            const tipo = dadosAtaque.type.name;
+            const categoria = dadosAtaque.damage_class.name; 
+            const poder = dadosAtaque.power ? dadosAtaque.power : "—";
+            const precisao = dadosAtaque.accuracy ? dadosAtaque.accuracy : "—";
+
+            const tr = document.createElement("tr");
+
+            // Badge de Tipo reaproveitando as suas classes CSS originais
+            const badgeTipo = `<span class="tipo tipo-${tipo}" style="padding: 4px 8px; font-size: 0.65rem;">${tipo.toUpperCase()}</span>`;
+
+            // Configuração visual do ícone de Categoria
+            let badgeCategoria = "—";
+            if (categoria === "physical") badgeCategoria = `<span class="mov-cat cat-physical" title="Physical">P</span>`;
+            else if (categoria === "special") badgeCategoria = `<span class="mov-cat cat-special" title="Special">S</span>`;
+            else if (categoria === "status") badgeCategoria = `<span class="mov-cat cat-status" title="Status">St</span>`;
+
+            tr.innerHTML = `
+                <td>${nivel === 0 ? 'Evo' : nivel}</td>
+                <td>${nome}</td>
+                <td style="text-align: center;">${badgeTipo}</td>
+                <td style="text-align: center;">${badgeCategoria}</td>
+                <td>${poder}</td>
+                <td>${precisao}</td>
+            `;
+
+            listaMovimentos.appendChild(tr);
+        });
+
+    } catch (erro) {
+        console.error("Erro ao carregar detalhes dos movimentos:", erro);
+        listaMovimentos.innerHTML = `<tr><td colspan="6" style="text-align:center;">Falha ao carregar ataques.</td></tr>`;
+    }
+}
+
+
+// ==============================
+// Função: Filtra e exibe os movimentos baseado no método de aprendizado
+// ==============================
+async function buscarMovimentos(movesDaAPI, metodo = "level-up") {
+    
+    // Mostra estado de carregamento dentro da tabela
+    listaMovimentos.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 20px; color: #888;">Carregando movimentos...</td></tr>`;
+
+    let movimentosFiltrados = [];
+
+    // 1. Filtrar os movimentos pelo método escolhido (level-up, machine, egg)
+    movesDaAPI.forEach(function(itemMovimento) {
+        const detalhes = itemMovimento.version_group_details.filter(v => v.move_learn_method.name === metodo);
+
+        if (detalhes.length > 0) {
+            const ultimoDetalhe = detalhes[detalhes.length - 1];
+            movimentosFiltrados.push({
+                nomeUrl: itemMovimento.move.url,
+                nomeExibicao: itemMovimento.move.name.replace(/-/g, ' '),
+                nivel: metodo === 'level-up' ? ultimoDetalhe.level_learned_at : '—'
+            });
+        }
+    });
+
+    // Se o Pokémon não aprender nada por esse método, avisa e encerra
+    if (movimentosFiltrados.length === 0) {
+        listaMovimentos.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 20px; color: #888;">Nenhum movimento encontrado para este filtro.</td></tr>`;
+        return;
+    }
+
+    // 2. Ordenação: por nível numérico se for Level-up, ou ordem alfabética se for TM/Egg
+    if (metodo === "level-up") {
+        movimentosFiltrados.sort((a, b) => a.nivel - b.nivel);
+    } else {
+        movimentosFiltrados.sort((a, b) => a.nomeExibicao.localeCompare(b.nomeExibicao));
+    }
+
+    // 3. Buscar detalhes na API
+    try {
+        const promessasAtaques = movimentosFiltrados.map(mov => fetch(mov.nomeUrl).then(res => res.json()));
+        const dadosAtaques = await Promise.all(promessasAtaques);
+
+        listaMovimentos.innerHTML = ""; // Limpa o "Carregando..."
+
+        // 4. Montar a tabela
+        dadosAtaques.forEach(function(dadosAtaque, index) {
+            const nivel = movimentosFiltrados[index].nivel;
+            const nome = movimentosFiltrados[index].nomeExibicao;
+            const tipo = dadosAtaque.type.name;
+            const categoria = dadosAtaque.damage_class.name; 
+            const poder = dadosAtaque.power ? dadosAtaque.power : "—";
+            const precisao = dadosAtaque.accuracy ? dadosAtaque.accuracy : "—";
+
+            const tr = document.createElement("tr");
+
+            const badgeTipo = `<span class="tipo tipo-${tipo}" style="padding: 4px 8px; font-size: 0.65rem;">${tipo.toUpperCase()}</span>`;
+
+            let badgeCategoria = "—";
+            if (categoria === "physical") badgeCategoria = `<span class="mov-cat cat-physical" title="Physical">P</span>`;
+            else if (categoria === "special") badgeCategoria = `<span class="mov-cat cat-special" title="Special">S</span>`;
+            else if (categoria === "status") badgeCategoria = `<span class="mov-cat cat-status" title="Status">St</span>`;
+
+            tr.innerHTML = `
+                <td>${nivel === 0 ? 'Evo' : nivel}</td>
+                <td>${nome}</td>
+                <td style="text-align: center;">${badgeTipo}</td>
+                <td style="text-align: center;">${badgeCategoria}</td>
+                <td>${poder}</td>
+                <td>${precisao}</td>
+            `;
+
+            listaMovimentos.appendChild(tr);
+        });
+
+    } catch (erro) {
+        console.error("Erro ao carregar detalhes dos movimentos:", erro);
+        listaMovimentos.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 20px; color: #e3000f;">Falha ao carregar ataques.</td></tr>`;
+    }
+}

@@ -203,7 +203,7 @@
 .evo-container {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     min-width: max-content;
 }
 
@@ -286,4 +286,117 @@
     font-style: normal;
     font-size: 1.2rem;
     line-height: 0.8;
+}
+
+/* ===========================
+   Tabela de Movimentos
+=========================== */
+
+#blocoMovimentos {
+    margin-top: 20px;
+    background-color: var(--bg-card-2);
+    border-radius: var(--radius-sm);
+    padding: 18px;
+    border: 1px solid var(--border);
+}
+
+#blocoMovimentos h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.tabela-responsiva {
+    width: 100%;
+    overflow-x: auto; /* Permite scroll no celular */
+}
+
+#tabelaMovimentos {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    text-align: right;
+    white-space: nowrap;
+}
+
+#tabelaMovimentos th, 
+#tabelaMovimentos td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+#tabelaMovimentos th {
+    font-weight: 700;
+    color: var(--text-muted);
+    background-color: #f0f0f5;
+}
+
+/* Alinha a coluna "Lv" e "Ataque" à esquerda */
+#tabelaMovimentos th:nth-child(1),
+#tabelaMovimentos td:nth-child(1),
+#tabelaMovimentos th:nth-child(2),
+#tabelaMovimentos td:nth-child(2) {
+    text-align: left;
+}
+
+#tabelaMovimentos td:nth-child(2) {
+    font-weight: 700;
+    color: #1a56c0; /* Azul característico de links de ataques */
+    text-transform: capitalize;
+}
+
+/* Badges da Categoria do Dano (Physical, Special, Status) */
+.mov-cat {
+    display: inline-block;
+    width: 26px;
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 2px 0;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+}
+
+.cat-physical { background: #f08030; color: white; border-color: #c06020; }
+.cat-special  { background: #6890f0; color: white; border-color: #4860c0; }
+.cat-status   { background: #a8a878; color: white; border-color: #808058; }
+
+/* ===========================
+   Filtros de Movimentos
+=========================== */
+
+#abasMovimentos {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.aba-movimento {
+    padding: 6px 14px;
+    background-color: var(--bg); /* Fundo cinzento claro definido nas variáveis */
+    border: 1px solid var(--border);
+    border-radius: 20px; /* Formato de "pílula" */
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+.aba-movimento:hover {
+    background-color: #ebebeb;
+    color: var(--text);
+}
+
+/* Estado ativo: quando o botão é selecionado, fica escuro com texto branco */
+.aba-movimento.ativa {
+    background-color: var(--text);
+    color: white;
+    border-color: var(--text);
+    font-weight: 700;
 }

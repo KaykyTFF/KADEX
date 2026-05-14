@@ -21,7 +21,7 @@
 
     </header>
 
-<main>
+    <main>
 
         <section id="secaoBusca">
 
@@ -63,6 +63,8 @@
             
             <div class="esqueleto-animacao esqueleto-painel"></div>
             <div class="esqueleto-animacao esqueleto-painel"></div>
+            
+            <div class="esqueleto-animacao esqueleto-painel" style="height: 250px;"></div>
         </section>
 
         <section id="secaoResultado" class="escondido">
@@ -107,6 +109,34 @@
  
                 <div id="listaHabilidades"></div>
  
+            </div>
+            
+            <div id="blocoMovimentos">            
+                <h4>Movimentos</h4>
+                
+                <div id="abasMovimentos" style="display: flex; gap: 8px; margin-bottom: 16px;">
+                    <button id="btnMoveLevel" class="aba-movimento ativa">Nível</button>
+                    <button id="btnMoveTM" class="aba-movimento">TM / HM</button>
+                    <button id="btnMoveEgg" class="aba-movimento">Ovo (Egg)</button>
+                </div>
+
+                <div class="tabela-responsiva">
+                    <table id="tabelaMovimentos">
+                        <thead>
+                            <tr>
+                                <th title="Level">Lv.</th>
+                                <th>Ataque</th>
+                                <th style="text-align: center;">Tipo</th>
+                                <th style="text-align: center;" title="Category">Cat.</th>
+                                <th title="Power">Poder</th>
+                                <th title="Accuracy">Prec.</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaMovimentos">
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
 
             <div id="blocoEvolucao">

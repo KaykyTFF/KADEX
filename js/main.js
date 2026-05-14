@@ -1,5 +1,4 @@
 
-
 async function buscarPokemon(parametroOpcional) {
     const nomeBuscado = (typeof parametroOpcional === "string") 
         ? parametroOpcional 
@@ -7,9 +6,11 @@ async function buscarPokemon(parametroOpcional) {
 
     if (nomeBuscado === "") return;
 
+    // Esconde os resultados anteriores e a mensagem de erro
     secaoResultado.classList.add("escondido");
     mensagemErro.classList.add("escondido");
     
+    // Mostra o esqueleto de carregamento
     if (esqueletoResultado) esqueletoResultado.classList.remove("escondido");
 
     btnBuscar.textContent = "Buscando...";
@@ -36,11 +37,25 @@ async function buscarPokemon(parametroOpcional) {
 
         const nomesTipos = dados.types.map(item => item.type.name);
 
+        // ==========================================
+        // ADIÇÕES AQUI: Configurando os botões de filtro
+        // ==========================================
+        // Armazena os movimentos globalmente
+        movimentosAtuais = dados.moves;
+        
+        // Reseta o visual dos botões, ativando "Nível" por padrão
+        document.querySelectorAll(".aba-movimento").forEach(b => b.classList.remove("ativa"));
+        if (btnMoveLevel) btnMoveLevel.classList.add("ativa");
+
+        // O bloco Promise.all processa as 3 funções ao mesmo tempo
+        // Modificamos buscarMovimentos para passar a variável e o método padrão
         await Promise.all([
             buscarTipagem(nomesTipos),
-            buscarHabilidades(dados.abilities)
+            buscarHabilidades(dados.abilities),
+            buscarMovimentos(movimentosAtuais, "level-up")
         ]);
 
+        // Carregamento concluído: Esconde o esqueleto e mostra a interface pronta
         if (esqueletoResultado) esqueletoResultado.classList.add("escondido");
         secaoResultado.classList.remove("escondido");
 
@@ -62,3 +77,22 @@ inputPokemon.addEventListener("keydown", function(evento) {
         buscarPokemon();
     }
 });
+
+// ==============================
+// Eventos dos Filtros de Movimentos
+// ==============================
+async function alterarAbaMovimento(metodo, botaoClicado) {
+    // Evita refazer a busca se clicar no botão que já está ativo
+    if (botaoClicado.classList.contains("ativa")) return;
+
+    // Muda a cor do botão ativo
+    document.querySelectorAll(".aba-movimento").forEach(b => b.classList.remove("ativa"));
+    botaoClicado.classList.add("ativa");
+
+    // Chama a função da UI com o método correspondente
+    await buscarMovimentos(movimentosAtuais, metodo);
+}
+
+btnMoveLevel.addEventListener("click", () => alterarAbaMovimento("level-up", btnMoveLevel));
+btnMoveTM.addEventListener("click", () => alterarAbaMovimento("machine", btnMoveTM));
+btnMoveEgg.addEventListener("click", () => alterarAbaMovimento("egg", btnMoveEgg));
