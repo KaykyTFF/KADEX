@@ -1102,40 +1102,89 @@ function renderOffensiveAnalysis(activeTeam) {
     const goodCoverage = TODOS_OS_TIPOS.filter(t => coveredTypes.has(t));
     const badCoverage = TODOS_OS_TIPOS.filter(t => !coveredTypes.has(t));
 
+    // Resumo e Explicação
+    const summaryText = `Seu time cobre <span class="font-black text-gray-800">${goodCoverage.length} de 18</span> tipos.`;
+    let coverageQuality = "Boa variedade ofensiva.";
+    let qualityColor = "text-emerald-500";
+    
+    if (goodCoverage.length > 12) {
+        coverageQuality = "Excelente variedade ofensiva.";
+        qualityColor = "text-emerald-600";
+    } else if (goodCoverage.length < 8) {
+        coverageQuality = "Baixa variedade ofensiva.";
+        qualityColor = "text-red-500";
+    }
+
     offensiveGrid.innerHTML = `
         <div class="space-y-6 w-full">
+            <!-- Cabeçalho e Resumo Principal (Layout em 2 colunas no desktop) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-gray-50/50 p-5 rounded-2xl border border-gray-100 flex flex-col justify-center">
+                    <span class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-1">Tipos Cobertos</span>
+                    <span class="text-3xl font-black text-gray-800 leading-none">${goodCoverage.length} <span class="text-lg text-gray-400 font-medium">de 18</span></span>
+                </div>
+                <div class="bg-gray-50/50 p-5 rounded-2xl border border-gray-100 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center ${goodCoverage.length >= 10 ? 'bg-emerald-100 text-emerald-500' : 'bg-red-100 text-red-500'}">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-1 block">Avaliação Geral</span>
+                        <span class="text-sm font-bold ${qualityColor} leading-tight block">${coverageQuality}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tipos bem cobertos -->
             <div class="space-y-3">
-                <span class="stat-label block text-emerald-500">Boa Cobertura</span>
-                <div class="grid grid-cols-6 sm:grid-cols-9 gap-2">
-                    ${goodCoverage.map(t => `
-                        <div class="w-10 h-10 rounded-xl tipo-${t} flex items-center justify-center text-[8px] text-white font-black uppercase shadow-sm transition-transform hover:scale-110" title="${t}">${t.substring(0, 3)}</div>
-                    `).join('')}
+                <span class="text-xs font-black uppercase tracking-widest text-emerald-600 block">Tipos bem cobertos</span>
+                <p class="text-xs font-medium text-gray-500">Seu time possui vantagem ofensiva contra estes tipos:</p>
+                <div class="flex flex-wrap gap-2.5 mt-2">
+                    ${goodCoverage.length > 0 
+                        ? goodCoverage.map(t => `<span class="tipo-badge tipo-${t}">${t}</span>`).join('') 
+                        : '<span class="text-sm text-gray-400 italic bg-gray-50 px-4 py-2 rounded-xl">Adicione Pokémon para ver a cobertura.</span>'
+                    }
                 </div>
             </div>
             
-            <div class="space-y-3">
-                <span class="stat-label block text-red-400">Cobertura Ausente</span>
-                <div class="grid grid-cols-6 sm:grid-cols-9 gap-2">
-                    ${badCoverage.map(t => `
-                        <div class="w-10 h-10 rounded-xl tipo-${t} opacity-20 grayscale flex items-center justify-center text-[8px] text-white font-black uppercase shadow-sm" title="${t}">${t.substring(0, 3)}</div>
-                    `).join('')}
-                </div>
+            <!-- Tipos sem cobertura -->
+            <div class="space-y-3 pt-6 border-t border-gray-100">
+                <span class="text-xs font-black uppercase tracking-widest text-red-500 block">Tipos sem cobertura ofensiva</span>
+                ${badCoverage.length > 0 
+                    ? `<p class="text-xs font-medium text-gray-500">Atualmente, seu time não tem boa pressão ofensiva contra estes tipos:</p>
+                       <div class="flex flex-wrap gap-2.5 mt-2">
+                           ${badCoverage.map(t => `<span class="tipo-badge tipo-${t} opacity-80">${t}</span>`).join('')}
+                       </div>`
+                    : `<div class="flex items-center gap-3 p-4 bg-emerald-50 rounded-2xl border border-emerald-100 text-emerald-700">
+                           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                           <span class="text-sm font-bold">Excelente! Seu time tem cobertura ofensiva contra todos os tipos.</span>
+                       </div>`
+                }
             </div>
         </div>
     `;
 
+    // Insight Final
     const summaryList = [];
-    if (goodCoverage.length > 12) summaryList.push(`<span class="text-emerald-600 font-bold">Excelente variedade!</span> Seu time cobre super efetivamente ${goodCoverage.length} de 18 tipos.`);
-    else if (goodCoverage.length < 8) summaryList.push(`<span class="text-red-500 font-bold">Atenção!</span> Seu time tem baixa variedade ofensiva.`);
+    if (goodCoverage.length > 12) {
+        summaryList.push(`Seu time tem uma presença ofensiva fantástica, conseguindo acertar com vantagem a grande maioria das ameaças.`);
+    } else if (goodCoverage.length < 8) {
+        summaryList.push(`Seu time tem dificuldade em causar dano super efetivo. Considere diversificar os tipos dos seus Pokémon.`);
+    } else {
+         summaryList.push(`Seu time tem boa variedade ofensiva geral.`);
+    }
 
     if (badCoverage.length > 0) {
-        const keyMissing = badCoverage.slice(0, 3).map(t => `<span class="uppercase">${t}</span>`).join(', ');
-        summaryList.push(`Considere adicionar golpes para cobrir: ${keyMissing}.`);
+        const keyMissing = badCoverage.slice(0, 3).map(t => `<span class="capitalize font-bold">${t}</span>`).join(', ');
+        const andMore = badCoverage.length > 3 ? ' entre outros' : '';
+        summaryList.push(`Ainda falta pressão contra ${keyMissing}${andMore}. Tente cobrir essas lacunas com novos golpes ou membros.`);
     }
 
     warnings.innerHTML = summaryList.map(item => `
-        <div class="p-3 bg-gray-50 rounded-2xl border border-gray-100 text-xs font-medium text-gray-600">
-            ${item}
+        <div class="flex items-start gap-3 p-4 bg-blue-50/50 text-blue-800 rounded-2xl border border-blue-100">
+            <div class="mt-0.5">
+                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <p class="text-xs font-medium leading-relaxed">${item}</p>
         </div>
     `).join('');
 }
