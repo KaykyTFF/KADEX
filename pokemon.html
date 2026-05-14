@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KADEX | Detalhes do Pokémon</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pokedex: {
+                            red: '#E3350D',
+                            'red-dark': '#B32506',
+                            'red-light': '#FF5A35',
+                        },
+                        glass: {
+                            white: 'rgba(255, 255, 255, 0.7)',
+                            border: 'rgba(255, 255, 255, 0.5)',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    backdropBlur: {
+                        xs: '2px',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/types.css">
+
+    <style type="text/tailwindcss">
+        @layer components {
+            .glass-panel {
+                @apply bg-white/70 backdrop-blur-md border border-white/50 shadow-xl rounded-3xl;
+            }
+            .btn-pokedex {
+                @apply bg-pokedex-red hover:bg-pokedex-red-dark text-white font-bold py-3 px-8 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-pokedex-red/30 disabled:opacity-50 disabled:cursor-not-allowed;
+            }
+            .input-pokedex {
+                @apply bg-white/80 border-2 border-transparent focus:border-pokedex-red focus:bg-white outline-none rounded-2xl px-6 py-3 w-full transition-all duration-300 shadow-inner;
+            }
+            .stat-bar-bg {
+                @apply h-2.5 w-full bg-gray-100 rounded-full overflow-hidden;
+            }
+            .stat-bar-fill {
+                @apply h-full transition-all duration-1000 ease-out rounded-full;
+            }
+            .aba-movimento {
+                @apply px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300;
+            }
+            .aba-movimento.ativa {
+                @apply bg-pokedex-red text-white shadow-md shadow-pokedex-red/20;
+            }
+            .aba-movimento:not(.ativa) {
+                @apply bg-gray-100 text-gray-600 hover:bg-gray-200;
+            }
+            .tab-btn {
+                @apply px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 transform hover:scale-105;
+            }
+            .tab-btn.ativa {
+                @apply bg-pokedex-red text-white shadow-lg shadow-pokedex-red/20;
+            }
+            .tab-btn:not(.ativa) {
+                @apply bg-white text-gray-400 hover:text-gray-600 border border-gray-100;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-900 font-sans min-h-screen selection:bg-pokedex-red/20 selection:text-pokedex-red">
+
+    <!-- Header background element -->
+    <div class="fixed top-0 left-0 w-full h-[400px] bg-gradient-to-b from-pokedex-red/10 to-transparent -z-10 pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto px-4">
+        <header></header>
+
+        <main class="space-y-12">
+            <!-- Skeleton Loader -->
+            <section id="esqueletoResultado" class="animate-pulse space-y-8">
+                <div class="glass-panel p-8 flex flex-col md:flex-row gap-12 items-center">
+                    <div class="w-64 h-64 bg-gray-200 rounded-3xl"></div>
+                    <div class="flex-grow space-y-6 w-full">
+                        <div class="h-10 bg-gray-200 rounded-xl w-1/3"></div>
+                        <div class="h-6 bg-gray-200 rounded-xl w-1/4"></div>
+                        <div class="flex gap-2">
+                            <div class="h-8 bg-gray-200 rounded-full w-20"></div>
+                            <div class="h-8 bg-gray-200 rounded-full w-20"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="glass-panel h-64 bg-gray-100/50"></div>
+                    <div class="glass-panel h-64 bg-gray-100/50"></div>
+                </div>
+            </section>
+
+            <!-- Result Section -->
+            <section id="secaoResultado" class="hidden space-y-8">
+                
+                <!-- Variety Tabs -->
+                <div id="abasFormas" class="flex flex-wrap gap-2 justify-center mb-4"></div>
+
+                <!-- Main Card -->
+                <div id="cardPokemon" class="glass-panel p-8 md:p-12 flex flex-col md:flex-row gap-12 items-center group relative overflow-hidden">
+                    <div id="pokemonBgAccent" class="absolute -top-24 -right-24 w-96 h-96 rounded-full blur-[100px] opacity-10 pointer-events-none transition-all duration-1000"></div>
+
+                    <div class="relative w-64 md:w-80 group z-10">
+                        <div class="absolute inset-0 bg-pokedex-red/5 rounded-full blur-3xl group-hover:bg-pokedex-red/10 transition-colors duration-500"></div>
+                        <img id="imgPokemon" src="" alt="Imagem do Pokémon" class="relative z-10 w-full h-auto drop-shadow-2xl transform transition-transform duration-500 group-hover:scale-110">
+                    </div>
+
+                    <div id="infoPokemon" class="flex-grow space-y-6 w-full z-10">
+                        <div class="flex flex-col md:flex-row md:items-baseline gap-4 md:justify-between">
+                            <div>
+                                <h2 id="nomePokemon" class="text-5xl font-extrabold tracking-tight capitalize text-gray-900 leading-tight"></h2>
+                                <p id="numeroPokemon" class="text-xl font-bold text-gray-300 mt-1"></p>
+                            </div>
+                            <div id="tiposPokemon" class="flex gap-2"></div>
+                        </div>
+
+                        <div id="infoFisica" class="grid grid-cols-2 gap-4 bg-white/40 backdrop-blur-sm p-4 rounded-2xl border border-white/50">
+                            <div class="text-center">
+                                <span class="block text-xs uppercase font-bold text-gray-400 tracking-widest">Altura</span>
+                                <span id="alturaPokemon" class="text-lg font-bold text-gray-700"></span>
+                            </div>
+                            <div class="text-center border-l border-gray-100">
+                                <span class="block text-xs uppercase font-bold text-gray-400 tracking-widest">Peso</span>
+                                <span id="pesoPokemon" class="text-lg font-bold text-gray-700"></span>
+                            </div>
+                        </div>
+                        
+                        <div id="baseStatsContainer" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- Training and Breeding -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div id="blocoTraining" class="glass-panel p-8">
+                        <h4 class="text-xl font-extrabold mb-6 flex items-center gap-2">
+                            <span class="w-1.5 h-6 bg-pokedex-red rounded-full"></span>
+                            Treinamento
+                        </h4>
+                        <div id="infoTraining" class="space-y-4"></div>
+                    </div>
+                    <div id="blocoBreeding" class="glass-panel p-8">
+                        <h4 class="text-xl font-extrabold mb-6 flex items-center gap-2">
+                            <span class="w-1.5 h-6 bg-pokedex-red rounded-full"></span>
+                            Reprodução
+                        </h4>
+                        <div id="infoBreeding" class="space-y-4"></div>
+                    </div>
+                </div>
+
+                <!-- Defenses and Extras -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div id="blocoDefesas" class="glass-panel p-8 lg:col-span-2">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                            <div>
+                                <h4 class="text-xl font-extrabold flex items-center gap-2">
+                                    <span class="w-1.5 h-6 bg-pokedex-red rounded-full"></span>
+                                    Fraquezas e Vantagens
+                                </h4>
+                            </div>
+                            <div id="resumoEfetividade" class="flex flex-wrap gap-2"></div>
+                        </div>
+                        <div id="containerDefesas" class="grid grid-cols-3 sm:grid-cols-6 lg:grid-cols-9 gap-2"></div>
+                    </div>
+                    <div id="blocoExtraInfo" class="glass-panel p-8">
+                        <h4 class="text-xl font-extrabold mb-6 flex items-center gap-2">
+                            <span class="w-1.5 h-6 bg-pokedex-red rounded-full"></span>
+                            Extras
+                        </h4>
+                        <div id="infoExtras" class="space-y-4"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <div id="blocoHabilidades" class="glass-panel p-8">
+                        <h4 class="text-xl font-extrabold mb-6 flex items-center gap-2">
+                            <span class="w-1.5 h-6 bg-pokedex-red rounded-full"></span>
+                            Habilidades
+                        </h4>
+                        <div id="listaHabilidades" class="space-y-4"></div>
+                    </div>
+                    <div id="blocoEvolucao" class="glass-panel p-8">
+                        <h4 class="text-xl font-extrabold mb-8 flex items-center gap-2">
+                            <span class="w-1.5 h-6 bg-pokedex-red rounded-full"></span>
+                            Cadeia Evolutiva
+                        </h4>
+                        <div id="gridEvolucao" class="flex flex-wrap justify-center items-center gap-8"></div>
+                    </div>
+                </div>
+
+                <!-- Moves -->
+                <div id="blocoMovimentos" class="glass-panel p-8 overflow-hidden">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                        <h4 class="text-xl font-extrabold flex items-center gap-2">
+                            <span class="w-1.5 h-6 bg-pokedex-red rounded-full"></span>
+                            Movimentos
+                        </h4>
+                        <div id="abasMovimentos" class="flex bg-gray-100/50 p-1.5 rounded-2xl gap-1">
+                            <button id="btnMoveLevel" class="aba-movimento ativa">Nível</button>
+                            <button id="btnMoveTM" class="aba-movimento">TM / HM</button>
+                            <button id="btnMoveEgg" class="aba-movimento">Ovo</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="text-xs uppercase font-bold text-gray-400 tracking-widest border-b border-gray-100">
+                                    <th class="pb-4 px-4">Lv.</th>
+                                    <th class="pb-4 px-4">Ataque</th>
+                                    <th class="pb-4 px-4 text-center">Tipo</th>
+                                    <th class="pb-4 px-4 text-center">Cat.</th>
+                                    <th class="pb-4 px-4 text-center">Poder</th>
+                                    <th class="pb-4 px-4 text-center">Prec.</th>
+                                </tr>
+                            </thead>
+                            <tbody id="listaMovimentos" class="divide-y divide-gray-50"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="mt-20"></footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/navigation.js"></script>
+    <script src="js/variaveis.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/autocomplete.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/pokemon-page.js"></script>
+</body>
+</html>

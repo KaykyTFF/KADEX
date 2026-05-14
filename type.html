@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KADEX | Detalhes do Tipo</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pokedex: {
+                            red: '#E3350D',
+                            'red-dark': '#B32506',
+                            'red-light': '#FF5A35',
+                        },
+                        glass: {
+                            white: 'rgba(255, 255, 255, 0.7)',
+                            border: 'rgba(255, 255, 255, 0.5)',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    backdropBlur: {
+                        xs: '2px',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/types.css">
+
+    <style type="text/tailwindcss">
+        @layer components {
+            .glass-panel {
+                @apply bg-white/70 backdrop-blur-md border border-white/50 shadow-xl rounded-3xl;
+            }
+            .btn-pokedex {
+                @apply bg-pokedex-red hover:bg-pokedex-red-dark text-white font-bold py-3 px-8 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-pokedex-red/30 disabled:opacity-50 disabled:cursor-not-allowed;
+            }
+            .input-pokedex {
+                @apply bg-white/80 border-2 border-transparent focus:border-pokedex-red focus:bg-white outline-none rounded-2xl px-6 py-3 w-full transition-all duration-300 shadow-inner;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-900 font-sans min-h-screen selection:bg-pokedex-red/20 selection:text-pokedex-red">
+
+    <!-- Header background element -->
+    <div class="fixed top-0 left-0 w-full h-[400px] bg-gradient-to-b from-pokedex-red/10 to-transparent -z-10 pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto px-4">
+        <header></header>
+
+        <main class="space-y-12">
+            <!-- Skeleton Loader -->
+            <section id="esqueletoTipo" class="animate-pulse space-y-8">
+                <div class="glass-panel p-8 md:p-12 space-y-6">
+                    <div class="h-12 bg-gray-200 rounded-xl w-1/3 mx-auto"></div>
+                    <div class="h-6 bg-gray-200 rounded-xl w-1/4 mx-auto"></div>
+                    <div class="h-20 bg-gray-200 rounded-2xl w-full"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="glass-panel p-8 h-64"></div>
+                    <div class="glass-panel p-8 h-64"></div>
+                </div>
+                <div class="glass-panel p-8 h-96"></div>
+            </section>
+
+            <!-- Type Content -->
+            <section id="conteudoTipo" class="hidden space-y-12">
+                <!-- Info Card -->
+                <div id="typeHeroCard" class="glass-panel p-8 md:p-12 text-center space-y-6 relative overflow-hidden transition-all duration-1000">
+                    <!-- Localized Accent Glow -->
+                    <div id="typeHeroAccent" class="absolute -top-32 -right-32 w-96 h-96 rounded-full blur-[100px] opacity-20 pointer-events-none transition-all duration-1000"></div>
+                    
+                    <div id="typeIconLarge" class="inline-flex items-center justify-center w-24 h-24 rounded-full text-white shadow-xl mb-2 relative z-10 transition-all duration-700">
+                        <!-- Icon will be injected or name shown -->
+                    </div>
+                    <div class="space-y-2 relative z-10">
+                        <h2 id="typeName" class="text-5xl font-extrabold tracking-tight capitalize text-gray-900 leading-none"></h2>
+                        <p id="typeCount" class="text-xl font-bold text-gray-300 uppercase tracking-widest"></p>
+                    </div>
+                    <div class="max-w-2xl mx-auto relative z-10">
+                        <p id="typeDesc" class="text-gray-500 font-medium leading-relaxed text-lg italic bg-white/40 backdrop-blur-sm p-6 rounded-2xl border border-white/50"></p>
+                    </div>
+                </div>
+
+                <!-- Damage Relations -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Offensive Relations -->
+                    <div class="glass-panel p-8 space-y-6">
+                        <h4 class="text-xl font-extrabold flex items-center gap-2 text-gray-800">
+                            <span class="w-1.5 h-6 bg-pokedex-red rounded-full"></span>
+                            Relações Ofensivas (Ataque)
+                        </h4>
+                        <div id="offensiveRelations" class="space-y-6">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Defensive Relations -->
+                    <div class="glass-panel p-8 space-y-6">
+                        <h4 class="text-xl font-extrabold flex items-center gap-2 text-gray-800">
+                            <span class="w-1.5 h-6 bg-blue-500 rounded-full"></span>
+                            Relações Defensivas (Defesa)
+                        </h4>
+                        <div id="defensiveRelations" class="space-y-6">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pokémon List -->
+                <div class="glass-panel overflow-hidden">
+                    <div class="p-8 border-b border-gray-50">
+                        <h4 class="text-xl font-extrabold flex items-center gap-2 text-gray-800">
+                            <span class="w-1.5 h-6 bg-pokedex-red rounded-full"></span>
+                            Pokémon deste Tipo
+                        </h4>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <!-- Desktop Table -->
+                        <table class="w-full text-left hidden md:table">
+                            <thead>
+                                <tr class="text-xs uppercase font-bold text-gray-400 tracking-widest border-b border-gray-50">
+                                    <th class="py-4 px-8 w-24">#</th>
+                                    <th class="py-4 px-4 w-16">Sprite</th>
+                                    <th class="py-4 px-4">Pokémon</th>
+                                    <th class="py-4 px-8 text-right">Tipos</th>
+                                </tr>
+                            </thead>
+                            <tbody id="listaPokemonTable" class="divide-y divide-gray-50/50"></tbody>
+                        </table>
+
+                        <!-- Mobile List -->
+                        <div id="listaPokemonMobile" class="md:hidden divide-y divide-gray-50 px-4"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="mt-20"></footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/navigation.js"></script>
+    <script src="js/variaveis.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/autocomplete.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/type.js"></script>
+</body>
+</html>

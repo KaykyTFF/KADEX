@@ -1,16 +1,137 @@
+function exibirDetalhesExtras(dados, especie) {
+    const trainingContainer = document.getElementById("infoTraining");
+    const breedingContainer = document.getElementById("infoBreeding");
+    const extraContainer = document.getElementById("infoExtras");
+
+    // --- Training ---
+    const evYield = dados.stats
+        .filter(s => s.effort > 0)
+        .map(s => `${s.effort} ${s.stat.name.replace(/-/g, ' ')}`)
+        .join(', ') || 'Nenhum';
+
+    const catchRate = especie.capture_rate;
+    const captureDifficulty = catchRate > 200 ? 'Fácil' : catchRate > 100 ? 'Média' : catchRate > 50 ? 'Difícil' : 'Muito Difícil';
+    const catchPercentage = ((catchRate / 255) * 100).toFixed(1);
+
+    trainingContainer.innerHTML = `
+        <div class="space-y-3">
+            <div class="flex justify-between items-center text-sm p-3 bg-gray-50/50 rounded-2xl border border-gray-100">
+                <span class="font-bold text-gray-400 uppercase text-[10px] tracking-widest">EV Yield</span>
+                <span class="font-extrabold text-gray-700 capitalize text-right ml-4">${evYield}</span>
+            </div>
+            <div class="flex justify-between items-center text-sm p-3 bg-gray-50/50 rounded-2xl border border-gray-100">
+                <span class="font-bold text-gray-400 uppercase text-[10px] tracking-widest">Taxa de Captura</span>
+                <div class="text-right">
+                    <span class="font-extrabold text-gray-700 block">${catchRate} (${catchPercentage}%)</span>
+                    <span class="text-[10px] font-bold text-pokedex-red uppercase">${captureDifficulty}</span>
+                </div>
+            </div>
+            <div class="flex justify-between items-center text-sm p-3 bg-gray-50/50 rounded-2xl border border-gray-100">
+                <span class="font-bold text-gray-400 uppercase text-[10px] tracking-widest">Amizade Base</span>
+                <span class="font-extrabold text-gray-700">${especie.base_happiness}</span>
+            </div>
+            <div class="flex justify-between items-center text-sm p-3 bg-gray-50/50 rounded-2xl border border-gray-100">
+                <span class="font-bold text-gray-400 uppercase text-[10px] tracking-widest">Exp. Base</span>
+                <span class="font-extrabold text-gray-700">${dados.base_experience || '—'}</span>
+            </div>
+            <div class="flex justify-between items-center text-sm p-3 bg-gray-50/50 rounded-2xl border border-gray-100">
+                <span class="font-bold text-gray-400 uppercase text-[10px] tracking-widest">Crescimento</span>
+                <span class="font-extrabold text-gray-700 capitalize">${especie.growth_rate.name.replace(/-/g, ' ')}</span>
+            </div>
+        </div>
+    `;
+
+    // --- Breeding ---
+    const eggGroups = especie.egg_groups.map(g => `<a href="egg-group.html?name=${g.name}" class="bg-indigo-50 text-indigo-600 px-2 py-1 rounded-lg font-bold capitalize hover:bg-indigo-100 transition-colors cursor-pointer">${g.name.replace(/-/g, ' ')}</a>`).join(' ') || 'Nenhum';
+    
+    // Gender Ratio
+    let genderHtml = '';
+    if (especie.gender_rate === -1) {
+        genderHtml = '<span class="font-extrabold text-gray-500 italic">Sem Gênero</span>';
+    } else {
+        const femalePercent = (especie.gender_rate / 8) * 100;
+        const malePercent = 100 - femalePercent;
+        genderHtml = `
+            <div class="w-full space-y-1">
+                <div class="flex justify-between text-[10px] font-bold uppercase tracking-tighter">
+                    <span class="text-blue-500">${malePercent}% ♂</span>
+                    <span class="text-pink-500">${femalePercent}% ♀</span>
+                </div>
+                <div class="h-1.5 w-full bg-pink-200 rounded-full overflow-hidden flex">
+                    <div class="h-full bg-blue-400" style="width: ${malePercent}%"></div>
+                </div>
+            </div>
+        `;
+    }
+
+    const eggCycles = especie.hatch_counter;
+    const hatchSteps = (eggCycles * 255).toLocaleString('pt-BR');
+    const hatchDifficulty = eggCycles > 35 ? 'Lento' : eggCycles > 20 ? 'Normal' : 'Rápido';
+
+    breedingContainer.innerHTML = `
+        <div class="space-y-3">
+            <div class="flex justify-between items-center text-sm p-3 bg-gray-50/50 rounded-2xl border border-gray-100">
+                <span class="font-bold text-gray-400 uppercase text-[10px] tracking-widest">Grupos de Ovos</span>
+                <div class="flex flex-wrap gap-1 justify-end">${eggGroups}</div>
+            </div>
+            <div class="flex justify-between items-center text-sm p-3 bg-gray-50/50 rounded-2xl border border-gray-100">
+                <span class="font-bold text-gray-400 uppercase text-[10px] tracking-widest">Gênero</span>
+                <div class="w-32 text-right">${genderHtml}</div>
+            </div>
+            <div class="flex justify-between items-center text-sm p-3 bg-gray-50/50 rounded-2xl border border-gray-100">
+                <span class="font-bold text-gray-400 uppercase text-[10px] tracking-widest">Ciclos de Ovo</span>
+                <div class="text-right">
+                    <span class="font-extrabold text-gray-700 block">${eggCycles} ciclos</span>
+                    <span class="text-[10px] font-bold text-gray-400 uppercase">${hatchSteps} passos (${hatchDifficulty})</span>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // --- Extra Info ---
+    const isLegendary = especie.is_legendary ? '<span class="bg-amber-100 text-amber-600 px-2 py-0.5 rounded text-[10px] font-black uppercase">Lendário</span>' : '';
+    const isMythical = especie.is_mythical ? '<span class="bg-purple-100 text-purple-600 px-2 py-0.5 rounded text-[10px] font-black uppercase">Mítico</span>' : '';
+    const isBaby = especie.is_baby ? '<span class="bg-green-100 text-green-600 px-2 py-0.5 rounded text-[10px] font-black uppercase">Bebê</span>' : '';
+
+    extraContainer.innerHTML = `
+        <div class="space-y-3">
+            <div class="flex flex-wrap gap-2 mb-2">${isLegendary}${isMythical}${isBaby}</div>
+            <div class="flex justify-between items-center text-sm p-3 bg-gray-50/50 rounded-2xl border border-gray-100">
+                <span class="font-bold text-gray-400 uppercase text-[10px] tracking-widest">Geração</span>
+                <span class="font-extrabold text-gray-700 uppercase">${especie.generation.name.replace('generation-', 'Gen ')}</span>
+            </div>
+            <div class="flex justify-between items-center text-sm p-3 bg-gray-50/50 rounded-2xl border border-gray-100">
+                <span class="font-bold text-gray-400 uppercase text-[10px] tracking-widest">Habitat</span>
+                <span class="font-extrabold text-gray-700 capitalize">${especie.habitat ? especie.habitat.name : 'Desconhecido'}</span>
+            </div>
+            <div class="flex justify-between items-center text-sm p-3 bg-gray-50/50 rounded-2xl border border-gray-100">
+                <span class="font-bold text-gray-400 uppercase text-[10px] tracking-widest">Formato</span>
+                <span class="font-extrabold text-gray-700 capitalize">${especie.shape ? especie.shape.name.replace(/-/g, ' ') : 'Desconhecido'}</span>
+            </div>
+            <div class="flex justify-between items-center text-sm p-3 bg-gray-50/50 rounded-2xl border border-gray-100">
+                <span class="font-bold text-gray-400 uppercase text-[10px] tracking-widest">Cor</span>
+                <span class="font-extrabold text-gray-700 capitalize">${especie.color ? especie.color.name : 'Desconhecida'}</span>
+            </div>
+        </div>
+    `;
+}
+
 function exibirDadosBasicos(dados) {
     imgPokemon.src = dados.sprites.other["official-artwork"].front_default;
     imgPokemon.alt = "Imagem de " + dados.name;
 
-    nomePokemon.textContent = dados.name.charAt(0).toUpperCase() + dados.name.slice(1);
+    nomePokemon.textContent = dados.name;
     numeroPokemon.textContent = "#" + String(dados.id).padStart(3, "0");
+
+    // Atualiza o nome no topo se existir (usado na pokemon.html)
+    const topoNome = document.getElementById("topoNomePokemon");
+    if (topoNome) {
+        topoNome.textContent = dados.name;
+    }
 
     tiposPokemon.innerHTML = "";
     dados.types.forEach(function(item) {
-        const badge = document.createElement("span");
-        badge.classList.add("tipo", "tipo-" + item.type.name);
-        badge.textContent = item.type.name;
-        tiposPokemon.appendChild(badge);
+        tiposPokemon.innerHTML += renderTypeBadge(item.type.name);
     });
 
     document.getElementById("alturaPokemon").textContent = (dados.height / 10) + " m";
@@ -20,8 +141,8 @@ function exibirDadosBasicos(dados) {
     statsContainer.innerHTML = ""; 
 
     const nomesStatsMap = {
-        "hp": "HP", "attack": "Attack", "defense": "Defense",
-        "special-attack": "Sp. Atk", "special-defense": "Sp. Def", "speed": "Speed"
+        "hp": "HP", "attack": "Ataque", "defense": "Defesa",
+        "special-attack": "Sp. Atk", "special-defense": "Sp. Def", "speed": "Velocidade"
     };
 
     dados.stats.forEach(function(item) {
@@ -29,18 +150,20 @@ function exibirDadosBasicos(dados) {
         const statValue = item.base_stat;
         const porcentagem = Math.min((statValue / 255) * 100, 100);
 
-        let corBarra = "#ffdd57"; 
-        if (statValue < 50) corBarra = "#ff5959"; 
-        if (statValue >= 90) corBarra = "#a0e515"; 
-        if (statValue >= 120) corBarra = "#23cd5e"; 
+        let corBarra = "bg-yellow-400"; 
+        if (statValue < 50) corBarra = "bg-red-400"; 
+        if (statValue >= 90) corBarra = "bg-lime-400"; 
+        if (statValue >= 120) corBarra = "bg-green-500"; 
 
         const divRow = document.createElement("div");
-        divRow.classList.add("stat-row");
+        divRow.className = "space-y-1.5";
         divRow.innerHTML = `
-            <div class="stat-name">${statNameDisplay}</div>
-            <div class="stat-value">${statValue}</div>
-            <div class="stat-bar-wrap">
-                <div class="stat-bar-fill" style="width: ${porcentagem}%; background-color: ${corBarra};"></div>
+            <div class="flex justify-between items-end">
+                <span class="text-[10px] uppercase font-bold text-gray-400 tracking-widest">${statNameDisplay}</span>
+                <span class="text-xs font-bold text-gray-700">${statValue}</span>
+            </div>
+            <div class="stat-bar-bg">
+                <div class="stat-bar-fill ${corBarra}" style="width: ${porcentagem}%;"></div>
             </div>
         `;
         statsContainer.appendChild(divRow);
@@ -61,29 +184,56 @@ async function buscarTipagem(nomesTipos) {
         relacoes.no_damage_from.forEach(t => multiplicadores[t.name] *= 0);
     }
 
-    const gridDefesas = document.getElementById("gridDefesas");
-    gridDefesas.innerHTML = "";
+    const containerDefesas = document.getElementById("containerDefesas");
+    const resumoEfetividade = document.getElementById("resumoEfetividade");
+    
+    if (!containerDefesas) return;
 
-    TODOS_OS_TIPOS.forEach(function(tipo) {
+    containerDefesas.innerHTML = "";
+    if (resumoEfetividade) resumoEfetividade.innerHTML = "";
+
+    TODOS_OS_TIPOS.forEach(tipo => {
         const valor = multiplicadores[tipo];
-        let textoMultiplicador = "";
-        let classeCor = "";
+        let textoMult = valor + "x";
+        if (valor === 0.5) textoMult = "½";
+        if (valor === 0.25) textoMult = "¼";
+        if (valor === 1) textoMult = "1";
+        if (valor === 0) textoMult = "0";
 
-        if (valor === 0) { textoMultiplicador = "0"; classeCor = "mult-imune"; } 
-        else if (valor === 0.25) { textoMultiplicador = "¼"; classeCor = "mult-resist"; } 
-        else if (valor === 0.5) { textoMultiplicador = "½"; classeCor = "mult-resist"; } 
-        else if (valor === 2) { textoMultiplicador = "2"; classeCor = "mult-fraco"; } 
-        else if (valor === 4) { textoMultiplicador = "4"; classeCor = "mult-fraco"; }
+        let multClass = "text-gray-400 font-medium";
+        let cellBg = "bg-white";
+        let borderClass = "border-gray-100";
 
-        const coluna = document.createElement("div");
-        coluna.classList.add("defesa-coluna");
+        if (valor > 1) {
+            multClass = "text-red-600 font-black";
+            cellBg = "bg-red-50/30";
+            borderClass = "border-red-100";
+        } else if (valor > 0 && valor < 1) {
+            multClass = "text-emerald-600 font-bold";
+            cellBg = "bg-emerald-50/20";
+            borderClass = "border-emerald-50";
+        } else if (valor === 0) {
+            multClass = "text-white font-black";
+            cellBg = "bg-gray-900";
+            borderClass = "border-gray-800";
+        }
+
+        const cell = document.createElement("a");
+        cell.href = `type.html?name=${tipo}`;
+        cell.className = `flex flex-col border rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md hover:scale-105 ${cellBg} ${borderClass}`;
+        
+        // Pega as 3 primeiras letras do tipo
         const siglaTipo = tipo.substring(0, 3).toUpperCase();
 
-        coluna.innerHTML = `
-            <div class="defesa-tipo tipo-${tipo}">${siglaTipo}</div>
-            <div class="defesa-multiplicador ${classeCor}">${textoMultiplicador}</div>
+        cell.innerHTML = `
+            <div class="tipo-${tipo} text-white text-[9px] font-black text-center py-1 uppercase tracking-tighter">
+                ${siglaTipo}
+            </div>
+            <div class="flex-grow flex items-center justify-center py-2">
+                <span class="text-xs ${multClass}">${textoMult}</span>
+            </div>
         `;
-        gridDefesas.appendChild(coluna);
+        containerDefesas.appendChild(cell);
     });
 }
 
@@ -94,25 +244,24 @@ async function buscarHabilidades(habilidades) {
         const resposta = await fetch(item.ability.url);
         const dados    = await resposta.json();
 
-        const entradaEfeito = dados.effect_entries.find(entrada => entrada.language.name === "en");
-        let descricaoFinal = "Sem descrição detalhada disponível.";
+        // Usa o helper global para obter o texto no melhor idioma disponível
+        const descricaoFinal = obterTextoPorIdioma(dados.flavor_text_entries, "flavor_text");
 
-        if (entradaEfeito) {
-            const descricaoLimpa = entradaEfeito.effect.replace(/\n/g, ' ').trim();
-            descricaoFinal = await traduzirTexto(descricaoLimpa);
-        }
+        const aHabilidade = document.createElement("a");
+        aHabilidade.href = `ability.html?name=${dados.name}`;
+        aHabilidade.className = "block p-4 rounded-2xl bg-gray-50/50 border border-gray-100 hover:bg-white hover:shadow-md hover:scale-[1.02] transition-all duration-300 cursor-pointer group";
 
-        const divHabilidade = document.createElement("div");
-        divHabilidade.classList.add("habilidade");
-
-        const oculta = item.is_hidden ? '<span class="oculta">(Habilidade Oculta)</span>' : "";
+        const oculta = item.is_hidden ? '<span class="text-[10px] font-bold text-pokedex-red/60 ml-2 uppercase tracking-tighter">(Oculta)</span>' : "";
         const nomeFormatado = item.ability.name.replace(/-/g, ' ');
 
-        divHabilidade.innerHTML = `
-            <div class="nomeHabilidade">${nomeFormatado} ${oculta}</div>
-            <div class="descHabilidade">${descricaoFinal}</div>
+        aHabilidade.innerHTML = `
+            <div class="text-sm font-extrabold capitalize text-gray-800 mb-1 flex items-center group-hover:text-pokedex-red transition-colors">
+                ${nomeFormatado} ${oculta}
+                <svg class="w-3 h-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+            </div>
+            <div class="text-xs text-gray-500 leading-relaxed line-clamp-2">${descricaoFinal}</div>
         `;
-        listaHabilidades.appendChild(divHabilidade);
+        listaHabilidades.appendChild(aHabilidade);
     }
 }
 
@@ -125,14 +274,22 @@ function renderizarAbasFormas(variedades, nomeFormaAtual) {
     variedades.forEach(function(item) {
         const nomeFormaAPI = item.pokemon.name;
         const btnAba = document.createElement("button");
-        btnAba.classList.add("aba-forma");
+        btnAba.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 transform hover:scale-105";
         
-        if (nomeFormaAPI === nomeFormaAtual) btnAba.classList.add("ativa");
+        if (nomeFormaAPI === nomeFormaAtual) {
+            btnAba.classList.add("bg-pokedex-red", "text-white", "shadow-lg", "shadow-pokedex-red/20");
+        } else {
+            btnAba.classList.add("bg-white", "text-gray-400", "hover:text-gray-600", "border", "border-gray-100");
+        }
 
         const nomeFormatado = nomeFormaAPI.split('-').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
         btnAba.textContent = nomeFormatado;
 
-        btnAba.addEventListener("click", () => buscarPokemon(nomeFormaAPI));
+        btnAba.addEventListener("click", () => {
+            if (typeof entidadeBusca === "function") {
+                entidadeBusca(nomeFormaAPI);
+            }
+        });
         abasFormas.appendChild(btnAba);
     });
 }
@@ -142,154 +299,98 @@ function obterDetalhesEvolucao(detalhes) {
     const regra = detalhes[0];
 
     if (regra.trigger.name === "level-up") {
-        if (regra.min_level) return `(Level ${regra.min_level})`;
-        if (regra.min_happiness) return `(High Friendship)`;
-        return `(Level Up)`;
+        if (regra.min_level) return `Lv. ${regra.min_level}`;
+        if (regra.min_happiness) return `Amizade`;
+        return `Nível`;
     }
-    if (regra.trigger.name === "use-item") return `(Use ${regra.item.name.replace(/-/g, ' ')})`;
-    if (regra.trigger.name === "trade") return `(Trade)`;
+    if (regra.trigger.name === "use-item") return regra.item.name.replace(/-/g, ' ');
+    if (regra.trigger.name === "trade") return `Troca`;
     
-    return `(${regra.trigger.name.replace(/-/g, ' ')})`;
+    return regra.trigger.name.replace(/-/g, ' ');
 }
 
 async function construirCadeiaEvolutiva(noAtual, containerDOM) {
-    const wrapper = document.createElement("div");
-    wrapper.classList.add("evo-wrapper");
-
     try {
-        const respostaPokemon = await fetch(URL_API + "pokemon/" + noAtual.species.name);
+        // 1. Buscar dados da espécie primeiro
+        const respostaEspecie = await fetch(URL_API + "pokemon-species/" + noAtual.species.name);
+        if (!respostaEspecie.ok) throw new Error('Espécie não encontrada');
+        const dadosEspecie = await respostaEspecie.json();
+
+        // 2. Encontrar a variedade padrão
+        const defaultVariety = dadosEspecie.varieties.find(v => v.is_default) || dadosEspecie.varieties[0];
+        const respostaPokemon = await fetch(defaultVariety.pokemon.url);
+        if (!respostaPokemon.ok) throw new Error('Pokémon não encontrado');
         const dadosPokemon = await respostaPokemon.json();
 
-        const tiposStr = dadosPokemon.types.map(item => item.type.name).join(' · ');
         const idFormatado = "#" + String(dadosPokemon.id).padStart(4, "0");
         const imagemUrl = dadosPokemon.sprites.other["official-artwork"].front_default || dadosPokemon.sprites.front_default;
 
+        // Container para este Pokémon e suas evoluções
+        const wrapperNode = document.createElement("div");
+        wrapperNode.className = "flex items-center gap-4 md:gap-8";
+
         const divPokemon = document.createElement("div");
-        divPokemon.classList.add("evo-pokemon");
+        divPokemon.className = "flex flex-col items-center group cursor-pointer p-3 rounded-2xl transition-all duration-500 hover:bg-white hover:shadow-lg border border-transparent hover:border-gray-100 w-24 md:w-28 flex-shrink-0";
         
         divPokemon.addEventListener("click", () => {
-            document.getElementById("inputPokemon").value = noAtual.species.name;
-            buscarPokemon(noAtual.species.name);
+            if (typeof abrirPokemon === 'function') {
+                abrirPokemon(noAtual.species.name);
+            } else {
+                document.getElementById("inputPokemon").value = noAtual.species.name;
+                if (typeof entidadeBusca === "function") {
+                    entidadeBusca(noAtual.species.name);
+                }
+            }
         });
 
         divPokemon.innerHTML = `
-            <img src="${imagemUrl}" alt="${dadosPokemon.name}" loading="lazy">
-            <span class="evo-id">${idFormatado}</span>
-            <span class="evo-name">${dadosPokemon.name}</span>
-            <span class="evo-types">${tiposStr}</span>
+            <div class="relative w-16 h-16 md:w-20 md:h-20 mb-2">
+                <div class="absolute inset-0 bg-gray-50 rounded-2xl group-hover:bg-pokedex-red/5 transition-colors duration-500"></div>
+                <img src="${imagemUrl}" alt="${dadosPokemon.name}" class="relative z-10 w-full h-full object-contain transform transition-transform duration-500 group-hover:scale-110" loading="lazy">
+            </div>
+            <span class="text-[9px] font-bold text-gray-300 uppercase tracking-widest">${idFormatado}</span>
+            <span class="text-xs font-black capitalize text-gray-700 mt-0.5 text-center truncate w-full">${dadosPokemon.name}</span>
+            <div class="flex gap-1 mt-1.5">
+                ${dadosPokemon.types.map(t => `<div class="w-1.5 h-1.5 rounded-full tipo-${t.type.name} shadow-sm"></div>`).join('')}
+            </div>
         `;
-        wrapper.appendChild(divPokemon);
+        wrapperNode.appendChild(divPokemon);
 
         if (noAtual.evolves_to.length > 0) {
+            // Container para as ramificações (pode ter mais de uma evolução a partir deste nó)
             const branchesContainer = document.createElement("div");
-            branchesContainer.classList.add("evo-branches");
+            branchesContainer.className = "flex flex-col gap-4";
 
             for (const proximaEvolucao of noAtual.evolves_to) {
                 const branch = document.createElement("div");
-                branch.classList.add("evo-branch");
+                branch.className = "flex items-center gap-4 md:gap-8";
 
                 const textoCondicao = obterDetalhesEvolucao(proximaEvolucao.evolution_details);
                 const seta = document.createElement("div");
-                seta.classList.add("evo-arrow");
-                seta.innerHTML = `<i>→</i><span>${textoCondicao}</span>`;
+                seta.className = "flex flex-col items-center text-gray-200 min-w-[40px]";
+                seta.innerHTML = `
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    <span class="text-[8px] font-bold uppercase tracking-tighter mt-1 text-gray-400 text-center">${textoCondicao}</span>
+                `;
 
                 branch.appendChild(seta);
                 await construirCadeiaEvolutiva(proximaEvolucao, branch);
                 branchesContainer.appendChild(branch);
             }
-            wrapper.appendChild(branchesContainer);
+            wrapperNode.appendChild(branchesContainer);
         }
-        containerDOM.appendChild(wrapper);
+
+        containerDOM.appendChild(wrapperNode);
     } catch (erro) {
         console.error("Erro ao construir nó evolutivo:", erro);
     }
 }
 
-// ==============================
-// Função: Filtra e exibe os movimentos aprendidos por Nível
-// ==============================
-async function buscarMovimentos(movesDaAPI) {
-    
-    listaMovimentos.innerHTML = "";
-
-    // 1. Filtrar apenas os movimentos aprendidos por "level-up"
-    let movimentosLevelUp = [];
-
-    movesDaAPI.forEach(function(itemMovimento) {
-        // Encontra todas as vezes que o movimento é aprendido por aumento de nível nas versões do jogo
-        const detalhesLevelUp = itemMovimento.version_group_details.filter(v => v.move_learn_method.name === "level-up");
-
-        if (detalhesLevelUp.length > 0) {
-            // Pega a versão mais recente em que ele aprende o golpe (o último item do array)
-            const ultimoDetalhe = detalhesLevelUp[detalhesLevelUp.length - 1];
-            
-            movimentosLevelUp.push({
-                nomeUrl: itemMovimento.move.url,
-                nomeExibicao: itemMovimento.move.name.replace(/-/g, ' '),
-                nivel: ultimoDetalhe.level_learned_at
-            });
-        }
-    });
-
-    // 2. Ordenar a lista pelo nível de aprendizado (do menor para o maior)
-    movimentosLevelUp.sort((a, b) => a.nivel - b.nivel);
-
-    // 3. Buscar os detalhes técnicos de cada movimento em paralelo (Power, Accuracy, Class)
-    const promessasAtaques = movimentosLevelUp.map(mov => fetch(mov.nomeUrl).then(res => res.json()));
-    
-    try {
-        const dadosAtaques = await Promise.all(promessasAtaques);
-
-        // 4. Montar o HTML da tabela
-        dadosAtaques.forEach(function(dadosAtaque, index) {
-            const nivel = movimentosLevelUp[index].nivel;
-            const nome = movimentosLevelUp[index].nomeExibicao;
-            const tipo = dadosAtaque.type.name;
-            const categoria = dadosAtaque.damage_class.name; 
-            const poder = dadosAtaque.power ? dadosAtaque.power : "—";
-            const precisao = dadosAtaque.accuracy ? dadosAtaque.accuracy : "—";
-
-            const tr = document.createElement("tr");
-
-            // Badge de Tipo reaproveitando as suas classes CSS originais
-            const badgeTipo = `<span class="tipo tipo-${tipo}" style="padding: 4px 8px; font-size: 0.65rem;">${tipo.toUpperCase()}</span>`;
-
-            // Configuração visual do ícone de Categoria
-            let badgeCategoria = "—";
-            if (categoria === "physical") badgeCategoria = `<span class="mov-cat cat-physical" title="Physical">P</span>`;
-            else if (categoria === "special") badgeCategoria = `<span class="mov-cat cat-special" title="Special">S</span>`;
-            else if (categoria === "status") badgeCategoria = `<span class="mov-cat cat-status" title="Status">St</span>`;
-
-            tr.innerHTML = `
-                <td>${nivel === 0 ? 'Evo' : nivel}</td>
-                <td>${nome}</td>
-                <td style="text-align: center;">${badgeTipo}</td>
-                <td style="text-align: center;">${badgeCategoria}</td>
-                <td>${poder}</td>
-                <td>${precisao}</td>
-            `;
-
-            listaMovimentos.appendChild(tr);
-        });
-
-    } catch (erro) {
-        console.error("Erro ao carregar detalhes dos movimentos:", erro);
-        listaMovimentos.innerHTML = `<tr><td colspan="6" style="text-align:center;">Falha ao carregar ataques.</td></tr>`;
-    }
-}
-
-
-// ==============================
-// Função: Filtra e exibe os movimentos baseado no método de aprendizado
-// ==============================
 async function buscarMovimentos(movesDaAPI, metodo = "level-up") {
-    
-    // Mostra estado de carregamento dentro da tabela
-    listaMovimentos.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 20px; color: #888;">Carregando movimentos...</td></tr>`;
+    listaMovimentos.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-gray-400 font-medium italic">Carregando movimentos...</td></tr>`;
 
     let movimentosFiltrados = [];
 
-    // 1. Filtrar os movimentos pelo método escolhido (level-up, machine, egg)
     movesDaAPI.forEach(function(itemMovimento) {
         const detalhes = itemMovimento.version_group_details.filter(v => v.move_learn_method.name === metodo);
 
@@ -303,27 +404,23 @@ async function buscarMovimentos(movesDaAPI, metodo = "level-up") {
         }
     });
 
-    // Se o Pokémon não aprender nada por esse método, avisa e encerra
     if (movimentosFiltrados.length === 0) {
-        listaMovimentos.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 20px; color: #888;">Nenhum movimento encontrado para este filtro.</td></tr>`;
+        listaMovimentos.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-gray-400 font-medium italic">Nenhum movimento encontrado para este filtro.</td></tr>`;
         return;
     }
 
-    // 2. Ordenação: por nível numérico se for Level-up, ou ordem alfabética se for TM/Egg
     if (metodo === "level-up") {
         movimentosFiltrados.sort((a, b) => a.nivel - b.nivel);
     } else {
         movimentosFiltrados.sort((a, b) => a.nomeExibicao.localeCompare(b.nomeExibicao));
     }
 
-    // 3. Buscar detalhes na API
     try {
         const promessasAtaques = movimentosFiltrados.map(mov => fetch(mov.nomeUrl).then(res => res.json()));
         const dadosAtaques = await Promise.all(promessasAtaques);
 
-        listaMovimentos.innerHTML = ""; // Limpa o "Carregando..."
+        listaMovimentos.innerHTML = "";
 
-        // 4. Montar a tabela
         dadosAtaques.forEach(function(dadosAtaque, index) {
             const nivel = movimentosFiltrados[index].nivel;
             const nome = movimentosFiltrados[index].nomeExibicao;
@@ -333,21 +430,23 @@ async function buscarMovimentos(movesDaAPI, metodo = "level-up") {
             const precisao = dadosAtaque.accuracy ? dadosAtaque.accuracy : "—";
 
             const tr = document.createElement("tr");
+            tr.className = "hover:bg-gray-50/50 transition-colors group";
 
-            const badgeTipo = `<span class="tipo tipo-${tipo}" style="padding: 4px 8px; font-size: 0.65rem;">${tipo.toUpperCase()}</span>`;
-
-            let badgeCategoria = "—";
-            if (categoria === "physical") badgeCategoria = `<span class="mov-cat cat-physical" title="Physical">P</span>`;
-            else if (categoria === "special") badgeCategoria = `<span class="mov-cat cat-special" title="Special">S</span>`;
-            else if (categoria === "status") badgeCategoria = `<span class="mov-cat cat-status" title="Status">St</span>`;
+            const badgeTipo = renderTypeBadge(tipo);
+            const badgeCategoria = renderCategoryBadge(categoria);
 
             tr.innerHTML = `
-                <td>${nivel === 0 ? 'Evo' : nivel}</td>
-                <td>${nome}</td>
-                <td style="text-align: center;">${badgeTipo}</td>
-                <td style="text-align: center;">${badgeCategoria}</td>
-                <td>${poder}</td>
-                <td>${precisao}</td>
+                <td class="py-4 px-4 text-xs font-bold text-gray-300 group-hover:text-pokedex-red transition-colors">${nivel === 0 ? 'Evo' : nivel}</td>
+                <td class="py-4 px-4 text-sm font-extrabold capitalize text-gray-700">
+                    <a href="move.html?name=${dadosAtaque.name}" class="hover:text-pokedex-red transition-colors cursor-pointer flex items-center gap-2">
+                        ${nome}
+                        <svg class="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    </a>
+                </td>
+                <td class="py-4 px-4 text-center">${badgeTipo}</td>
+                <td class="py-4 px-4 text-center">${badgeCategoria}</td>
+                <td class="py-4 px-4 text-center text-xs font-bold text-gray-500">${poder}</td>
+                <td class="py-4 px-4 text-center text-xs font-bold text-gray-500">${precisao}%</td>
             `;
 
             listaMovimentos.appendChild(tr);
@@ -355,6 +454,6 @@ async function buscarMovimentos(movesDaAPI, metodo = "level-up") {
 
     } catch (erro) {
         console.error("Erro ao carregar detalhes dos movimentos:", erro);
-        listaMovimentos.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 20px; color: #e3000f;">Falha ao carregar ataques.</td></tr>`;
+        listaMovimentos.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-red-400 font-bold italic">Falha ao carregar ataques.</td></tr>`;
     }
 }

@@ -1,0 +1,110 @@
+/* Pokémon Type Colors & Badges */
+.tipo-normal { background: linear-gradient(135deg, #A8A77A, #8A885D); }
+.tipo-fire { background: linear-gradient(135deg, #EE8130, #C96611); }
+.tipo-water { background: linear-gradient(135deg, #6390F0, #3E66CC); }
+.tipo-electric { background: linear-gradient(135deg, #F7D02C, #D6AF11); text-shadow: 0 1px 1px rgba(0,0,0,0.2); color: #000 !important; }
+.tipo-grass { background: linear-gradient(135deg, #7AC74C, #5E9E36); }
+.tipo-ice { background: linear-gradient(135deg, #96D9D6, #71BDBA); }
+.tipo-fighting { background: linear-gradient(135deg, #C22E28, #961D19); }
+.tipo-poison { background: linear-gradient(135deg, #A33EA1, #7D2A7B); }
+.tipo-ground { background: linear-gradient(135deg, #E2BF65, #B8974B); }
+.tipo-flying { background: linear-gradient(135deg, #A98FF3, #8169D9); }
+.tipo-psychic { background: linear-gradient(135deg, #F95587, #D43663); }
+.tipo-bug { background: linear-gradient(135deg, #A6B91A, #829411); }
+.tipo-rock { background: linear-gradient(135deg, #B6A136, #8E7F26); }
+.tipo-ghost { background: linear-gradient(135deg, #735797, #553E75); }
+.tipo-dragon { background: linear-gradient(135deg, #6F35FC, #4E1BBF); }
+.tipo-dark { background: linear-gradient(135deg, #705746, #4E3E32); }
+.tipo-steel { background: linear-gradient(135deg, #B7B7CE, #8E8EA6); }
+.tipo-fairy { background: linear-gradient(135deg, #D685AD, #B55F87); }
+
+/* Unified Badge Style - Using standard CSS for browser compatibility */
+.tipo-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 1rem;
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: white !important;
+    text-decoration: none !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    line-height: 1;
+    min-width: 65px;
+    white-space: nowrap;
+}
+
+.tipo-electric.tipo-badge { color: #2d3748 !important; text-shadow: none; }
+
+.tipo-badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.tipo-badge:active {
+    transform: scale(0.95);
+}
+
+/* Category Badges */
+.cat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.35rem 1rem;
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.cat-badge svg {
+    width: 0.75rem;
+    height: 0.75rem;
+}
+
+.cat-physical {
+    background-color: #fffaf0;
+    color: #dd6b20;
+    border-color: rgba(254, 235, 200, 0.5);
+}
+.cat-special {
+    background-color: #ebf8ff;
+    color: #3182ce;
+    border-color: rgba(190, 227, 248, 0.5);
+}
+.cat-status {
+    background-color: #f7fafc;
+    color: #718096;
+    border-color: rgba(226, 232, 240, 0.5);
+}
+
+/* Metadata Card Highlights */
+.meta-card-highlight {
+    position: relative;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    padding: 1rem;
+    border-radius: 1.5rem;
+    transition: all 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.meta-card-highlight:hover {
+    background-color: white;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: scale(1.02);
+}

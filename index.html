@@ -1,168 +1,117 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KADEX | PokéSearch Premium</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pokedex: {
+                            red: '#E3350D',
+                            'red-dark': '#B32506',
+                            'red-light': '#FF5A35',
+                        },
+                        glass: {
+                            white: 'rgba(255, 255, 255, 0.7)',
+                            border: 'rgba(255, 255, 255, 0.5)',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    backdropBlur: {
+                        xs: '2px',
+                    }
+                }
+            }
+        }
+    </script>
 
-    <title>Buscador de Pokémon</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/types.css">
+    <link rel="stylesheet" href="css/components.css">
 
-    <link rel="stylesheet" href="css/style.css">
-
+    <style type="text/tailwindcss">
+        @layer components {
+            .glass-panel {
+                @apply bg-white/70 backdrop-blur-md border border-white/50 shadow-xl rounded-3xl;
+            }
+            .btn-pokedex {
+                @apply bg-pokedex-red hover:bg-pokedex-red-dark text-white font-bold py-3 px-8 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-pokedex-red/30 disabled:opacity-50 disabled:cursor-not-allowed;
+            }
+            .input-pokedex {
+                @apply bg-white/80 border-2 border-transparent focus:border-pokedex-red focus:bg-white outline-none rounded-2xl px-6 py-3 w-full transition-all duration-300 shadow-inner;
+            }
+        }
+    </style>
 </head>
 
-<body>
+<body class="bg-gray-50 text-gray-900 font-sans min-h-screen selection:bg-pokedex-red/20 selection:text-pokedex-red flex flex-col">
 
-    <header>
+    <!-- Header background element -->
+    <div class="fixed top-0 left-0 w-full h-full bg-gradient-to-b from-pokedex-red/10 via-transparent to-transparent -z-10 pointer-events-none"></div>
 
-        <h1>KADEX</h1>
-        <p>Busque informações de qualquer Pokémon usando a PokéAPI</p>
+    <div class="flex-grow flex items-center justify-center">
+        <div class="w-full max-w-2xl px-6 py-12 space-y-12">
+            <!-- Hero Section -->
+            <header class="text-center space-y-4 animate-fade-in-down">
+                <h1 class="text-6xl md:text-8xl font-black tracking-tighter text-pokedex-red">
+                    KADEX<span class="text-gray-300 font-light">.</span>
+                </h1>
+                <p class="text-gray-400 font-medium leading-relaxed text-lg max-w-md mx-auto">
+                    Explore o universo Pokémon com dados precisos em tempo real da PokéAPI.
+                </p>
+            </header>
 
-    </header>
-
-    <main>
-
-        <section id="secaoBusca">
-
-            <h2>Buscar Pokémon</h2>
-
-            <div id="campoBusca">
-                <input
-                    type="text"
-                    id="inputPokemon"
-                    placeholder="Nome ou ID na Pokédex"
-                    autocomplete="off"
-                >
-                <button id="btnBuscar">Buscar</button>
-                
-                <ul id="listaSugestoes" class="escondido"></ul>
-            </div>
-
-            <p id="mensagemErro" class="escondido">E isso lá é um pokémon? Tente outro nome ou número.</p>
-
-        </section>
-
-        <section id="esqueletoResultado" class="escondido">
-            <div class="esqueleto-animacao esqueleto-header"></div>
-            
-            <div class="esqueleto-card">
-                <div class="esqueleto-animacao esqueleto-img"></div>
-                <div class="esqueleto-info">
-                    <div class="esqueleto-animacao esqueleto-linha titulo"></div>
-                    <div class="esqueleto-animacao esqueleto-linha subtitulo"></div>
-                    <div class="esqueleto-tags">
-                        <div class="esqueleto-animacao esqueleto-tag"></div>
-                        <div class="esqueleto-animacao esqueleto-tag"></div>
+            <!-- Search Container -->
+            <main class="animate-fade-in-down relative z-50" style="animation-delay: 100ms">
+                <div id="campoBusca" class="relative">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="relative flex-grow">
+                            <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-gray-400 peer-focus-within:text-pokedex-red transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </div>
+                            <input
+                                type="text"
+                                id="inputPokemon"
+                                placeholder="Pokémon ou Movimento..."
+                                autocomplete="off"
+                                class="input-pokedex text-lg pl-14 !py-5 peer"
+                            >
+                            <ul id="listaSugestoes" class="absolute z-50 w-full mt-2 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/50 overflow-y-auto max-h-[400px] overscroll-contain hidden ring-1 ring-black/5 custom-scrollbar"></ul>
+                        </div>
+                        <button id="btnBuscar" class="bg-pokedex-red text-white px-10 py-5 rounded-2xl hover:bg-pokedex-red-dark transition-all duration-300 shadow-xl shadow-pokedex-red/20 font-bold text-lg active:scale-95 flex-shrink-0">
+                            Buscar
+                        </button>
                     </div>
-                    <div class="esqueleto-animacao esqueleto-bloco"></div>
-                    <div class="esqueleto-animacao esqueleto-bloco"></div>
-                    <div class="esqueleto-animacao esqueleto-bloco"></div>
                 </div>
-            </div>
-            
-            <div class="esqueleto-animacao esqueleto-painel"></div>
-            <div class="esqueleto-animacao esqueleto-painel"></div>
-            
-            <div class="esqueleto-animacao esqueleto-painel" style="height: 250px;"></div>
-        </section>
-
-        <section id="secaoResultado" class="escondido">
- 
-            <h2>Resultado</h2>
-
-            <div id="abasFormas"></div>
-
-            <div id="cardPokemon">
- 
-                <img id="imgPokemon" src="" alt="Imagem do Pokémon">
- 
-                <div id="infoPokemon">
- 
-                    <h3 id="nomePokemon"></h3>
-                    <p id="numeroPokemon"></p>
- 
-                    <div id="tiposPokemon"></div>
- 
-                    <div id="infoFisica" style="margin-bottom: 15px; font-size: 0.95rem; color: #555;">
-                        <p><strong>Altura:</strong> <span id="alturaPokemon"></span></p>
-                        <p><strong>Peso:</strong> <span id="pesoPokemon"></span></p>
-                    </div>
-                    
-                    <div id="baseStatsContainer"></div>
- 
+                <!-- Error Message Placeholder -->
+                <div id="mensagemErro" class="hidden mt-6 text-center animate-fade-in">
+                    <p class="text-pokedex-red font-bold bg-pokedex-red/5 py-3 px-6 rounded-2xl border border-pokedex-red/10 inline-block shadow-sm"></p>
                 </div>
- 
-            </div>
- 
-            <div id="blocoDefesas">
-                
-                <h4>Fraquezas e Vantagens <span class="subtitulo"></span></h4>
-                
-                <div id="gridDefesas"></div>
-                
-            </div>
- 
-            <div id="blocoHabilidades">
- 
-                <h4>Habilidades</h4>
- 
-                <div id="listaHabilidades"></div>
- 
-            </div>
-            
-            <div id="blocoMovimentos">            
-                <h4>Movimentos</h4>
-                
-                <div id="abasMovimentos" style="display: flex; gap: 8px; margin-bottom: 16px;">
-                    <button id="btnMoveLevel" class="aba-movimento ativa">Nível</button>
-                    <button id="btnMoveTM" class="aba-movimento">TM / HM</button>
-                    <button id="btnMoveEgg" class="aba-movimento">Ovo (Egg)</button>
-                </div>
+            </main>
+        </div>
+    </div>
 
-                <div class="tabela-responsiva">
-                    <table id="tabelaMovimentos">
-                        <thead>
-                            <tr>
-                                <th title="Level">Lv.</th>
-                                <th>Ataque</th>
-                                <th style="text-align: center;">Tipo</th>
-                                <th style="text-align: center;" title="Category">Cat.</th>
-                                <th title="Power">Poder</th>
-                                <th title="Accuracy">Prec.</th>
-                            </tr>
-                        </thead>
-                        <tbody id="listaMovimentos">
-                        </tbody>
-                    </table>
-                </div>
+    <footer class="animate-fade-in-down" style="animation-delay: 200ms"></footer>
 
-            </div>
-
-            <div id="blocoEvolucao">
-                
-                <h4>Cadeia Evolutiva</h4>
-                
-                <div id="gridEvolucao" class="evo-container"></div>
-                
-            </div>
- 
-        </section>
-
-    </main>
-
-    <footer>
-
-        <p>Projeto desenvolvido na disciplina de Programação Web</p>
-        <p>Kayky Terles</p>
-
-    </footer>
-
+    <!-- Scripts -->
+    <script src="js/navigation.js"></script>
     <script src="js/variaveis.js"></script>
     <script src="js/api.js"></script>
-    <script src="js/ui.js"></script>
     <script src="js/autocomplete.js"></script>
     <script src="js/main.js"></script>
 </body>
-
 </html>
