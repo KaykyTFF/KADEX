@@ -150,14 +150,14 @@ function attachSearchListeners() {
     if (btnBuscar) {
         // Remove existing listener if any to avoid duplicates
         btnBuscar.onclick = null; 
-        btnBuscar.onclick = () => entidadeBusca();
+        btnBuscar.onclick = () => window.entidadeBusca();
     }
 
     if (inputPokemon) {
         inputPokemon.onkeydown = null;
         inputPokemon.onkeydown = function(evento) {
             if (evento.key === "Enter") {
-                entidadeBusca();
+                window.entidadeBusca();
             }
         };
     }

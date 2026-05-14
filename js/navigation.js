@@ -119,13 +119,20 @@ const Navigation = {
 
         header.innerHTML = `
             <div class="flex flex-col gap-6 md:gap-8">
-                <!-- Top Row: Logo and Search -->
+                <!-- Top Row: Logo, Team Link and Search -->
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <a href="${logoLink}" class="inline-block flex-shrink-0 self-start md:self-auto">
-                        <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-pokedex-red hover:opacity-80 transition-all duration-300 transform hover:scale-105 active:scale-95">
-                            KADEX<span class="text-gray-300 font-light">.</span>
-                        </h1>
-                    </a>
+                    <div class="flex items-center justify-between md:justify-start gap-8">
+                        <a href="${logoLink}" class="inline-block flex-shrink-0 transform hover:scale-105 transition-transform active:scale-95">
+                            <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-pokedex-red">
+                                KADEX<span class="text-gray-300 font-light">.</span>
+                            </h1>
+                        </a>
+                        <a href="team.html" class="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 font-bold rounded-xl transition-all duration-300 shadow-sm text-sm group active:scale-95">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg>
+                            <span class="hidden sm:inline">Analisar Time</span>
+                            <span class="sm:hidden">Time</span>
+                        </a>
+                    </div>
                     ${searchHtml}
                 </div>
                 

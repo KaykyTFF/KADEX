@@ -3,8 +3,9 @@
  * KADEX - Autocomplete System
  */
 
-let cachePokemons = [];
-let cacheMoves = [];
+// Globals para serem acessadas por outros scripts
+window.cachePokemons = [];
+window.cacheMoves = [];
 
 async function carregarListaGlobal() {
     try {
@@ -16,8 +17,8 @@ async function carregarListaGlobal() {
         const dadosPkmn = await resPkmn.json();
         const dadosMove = await resMove.json();
 
-        cachePokemons = dadosPkmn.results;
-        cacheMoves = dadosMove.results;
+        window.cachePokemons = dadosPkmn.results;
+        window.cacheMoves = dadosMove.results;
     } catch (erro) {
         console.error("Falha ao carregar lista para autocomplete.", erro);
     }
